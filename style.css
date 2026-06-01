@@ -1,0 +1,348 @@
+/* ==========================================================================
+   1. CONFIGURACIÓN GENERAL
+   ========================================================================== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    padding: 30px;
+    margin: 0;
+    
+    /* Fondo azul claro / celeste corporativo */
+    background-color: #1a3a6a; 
+}
+
+/* ==========================================================================
+   2. CUADRO GLOBAL CON PUNTAS OVALADAS (TARJETA CONTENEDORA)
+   ========================================================================== */
+.tarjeta-global {
+    background-color: rgb(255, 255, 255); 
+    backdrop-filter: blur(5px);
+    border: 1px solid #dcdde1;
+    border-radius: 20px; 
+    padding: 30px;
+    /* Agrandado al 96% de tu pantalla para que respire */
+    max-width: 96%; 
+    margin: 0 auto;
+    box-shadow: 0 10px 30px rgba(30, 60, 114, 0.06);
+}
+
+/* ==========================================================================
+   3. CABECERA (LOGO GRANDE, TÍTULOS Y BUSCADOR ALINEADOS EN LÍNEA)
+   ========================================================================== */
+.cabecera-principal {
+    display: flex;
+    align-items: center; 
+    gap: 25px;
+    margin-bottom: 30px;
+    padding-left: 10px;
+    border-bottom: 2px solid rgba(30, 60, 114, 0.1);
+    padding-bottom: 20px;
+}
+
+.logo-empresa {
+    max-height: 110px; 
+    width: auto;
+    object-fit: contain;
+}
+
+.titulos {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+h1 {
+    color: #1e3c72; 
+    margin: 0;
+    font-size: 2rem;
+    letter-spacing: -0.5px;
+}
+
+p {
+    margin: 0;
+    color: #5a738e;
+    font-size: 1.05rem;
+}
+
+/* ==========================================================================
+   4. ESTRUCTURA Y EDIFICIOS EN PARALELO 
+   ========================================================================== */
+.contenedor-edificios {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap; 
+    width: 100%;
+}
+
+fieldset {
+    border: 2px solid #bdc3c7;
+    border-radius: 12px;
+    background-color: white;
+    padding: 20px;
+    flex: 1;
+    min-width: 320px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+legend {
+    font-weight: bold;
+    font-size: 1.25rem;
+    color: #1e3c72;
+    padding: 0 12px;
+}
+
+/* ==========================================================================
+   5. DESPLEGABLES NIDOS (PISOS Y DEPARTAMENTOS)
+   ========================================================================== */
+details.piso {
+    background-color: #ebf3f9;
+    border: 1px solid #ced6e0;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    padding: 12px;
+}
+
+details.piso > summary {
+    font-weight: bold;
+    color: #2c3e50;
+    cursor: pointer;
+    outline: none;
+}
+
+details.departamento {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #3498db; 
+    border-radius: 4px;
+    margin-top: 8px;
+    margin-left: 15px;
+    padding: 10px;
+}
+
+details.departamento > summary {
+    font-weight: 600;
+    color: #34495e;
+    cursor: pointer;
+    outline: none;
+}
+
+.cantidad-pcs {
+    color: #7f8c8d;
+    font-weight: normal;
+    font-size: 0.85rem;
+    margin-left: 5px;
+}
+
+/* ==========================================================================
+   6. LISTADO DE COMPUTADORAS E IMPRESORAS (ALINEACIÓN PERFECTA)
+   ========================================================================== */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0 15px;
+}
+
+li {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 0.95rem;
+    border-bottom: 1px dashed #f1f2f6;
+}
+
+li:last-child {
+    border-bottom: none;
+}
+
+.pc-nombre {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-right: 8px; /* Deja un pequeño espacio antes de la IP */
+}
+
+/* NUEVA CLASE PARA LA IP DE LAS PCs EN GRIS */
+.pc-ip {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    font-family: Consolas, monospace; /* Letra tipo consola/código */
+    margin-right: auto; /* ESTA ES LA MAGIA: Empuja al usuario hacia la derecha */
+}
+
+.pc-usuario {
+    white-space: nowrap; 
+    text-align: right;
+    color: #7f8c8d;
+    font-size: 0.85rem;
+}
+
+/* CLASE PARA LA IP DE IMPRESORAS */
+.ip-impresora {
+    color: #94a3b8;
+    font-size: 0.85em;
+    font-family: Consolas, monospace; 
+    margin-left: 6px;
+}
+
+/* ==========================================================================
+   7. INDICADORES DE ESTADO (LUCES VERDE / ROJO)
+   ========================================================================== */
+.indicador {
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    margin-right: 10px;
+    flex-shrink: 0; 
+}
+
+.verde {
+    background-color: #2ecc71;
+    box-shadow: 0 0 6px #2ecc71;
+}
+
+.rojo {
+    background-color: #e74c3c;
+    box-shadow: 0 0 6px #e74c3c;
+}
+
+.gris {
+    background-color: #bdc3c7;
+    box-shadow: 0 0 6px #bdc3c7;
+}
+
+/* ==========================================================================
+   8. CUADRO DE RESUMEN / ESTADÍSTICAS (ABAJO A LA DERECHA)
+   ========================================================================== */
+.cuadro-resumen {
+    background-color: #ffffff;
+    border: 1px solid #dcdde1;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 15px 25px;
+    width: 100%;
+    box-sizing: border-box;
+    align-self: flex-start;
+    margin-top: 5px;
+}
+
+.cuadro-resumen h3 {
+    margin: 0 0 12px 0;
+    color: #1e3c72;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #f1f2f6;
+    padding-bottom: 5px;
+}
+
+.dato {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.numero { color: #7f8c8d; }
+.numero-verde { color: #2ecc71; font-weight: bold; }
+.numero-rojo { color: #e74c3c; font-weight: bold; }
+
+/* ==========================================================================
+   9. BARRA DE BÚSQUEDA 
+   ========================================================================== */
+.buscador-container {
+    margin-left: auto; 
+    padding-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+#input-busqueda {
+    width: 280px; 
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    border: 2px solid #bdc3c7;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease;
+    background-color: #ffffff;
+}
+
+#input-busqueda:focus {
+    border-color: #1e3c72;
+    box-shadow: 0 0 8px rgba(30, 60, 114, 0.15);
+}
+
+/* ==========================================================================
+   10. ESTRUCTURA DE 3 COLUMNAS MÁS ESPACIOSA
+   ========================================================================== */
+.contenedor-principal {
+    display: flex;
+    gap: 30px; 
+    align-items: flex-start;
+    width: 100%;
+    flex-wrap: nowrap; 
+}
+
+.columna-izquierda {
+    flex: 2; 
+    min-width: 550px;
+    display: flex;
+    flex-direction: column;
+}
+
+.columna-centro {
+    flex: 1.2; 
+    min-width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.columna-derecha {
+    flex: 0.8; 
+    min-width: 250px;
+    max-width: 320px;
+    position: sticky;
+    top: 20px; 
+}
+
+/* Tarjetas Generales de las Secciones */
+.tarjeta-seccion {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    height: 100%; 
+}
+
+.tarjeta-seccion h2 {
+    color: #1e3a8a;
+    font-size: 1.4rem;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+}
+
+/* Estilos internos de las estadísticas */
+.bloque-metrica h4 {
+    margin: 0 0 10px 0;
+    color: #334155;
+    font-size: 1.1rem;
+}
+
+.bloque-metrica.global h4 {
+    color: #0f172a; 
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.separador-metrica {
+    border: 0;
+    height: 1px;
+    background: #e2e8f0;
+    margin: 15px 0;
+}
+
+.separador-metrica.global {
+    height: 2px;
+    background: #94a3b8; 
+}

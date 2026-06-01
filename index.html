@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor de Red - AESA</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#003366">
+    <link rel="icon" type="image/png" href="iso.png">
+    <link rel="apple-touch-icon" href="iso.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="tarjeta-global">
+        
+        <header class="cabecera-principal">
+            <img src="Aesa.png" alt="Logo AESA" class="logo-empresa">
+            
+            <div class="titulos">
+                <h1>💻 Monitoreo de Red Corporativa</h1>
+                <p>Despliega los edificios y sucursales para ver las estaciones de trabajo en tiempo real.</p>
+            </div>
+
+            <div class="buscador-container">
+                <input type="text" id="input-busqueda" placeholder="🔍 Buscar por PC, usuario o IP..." onkeyup="filtrarPCs(false)">
+            </div>
+        </header>
+
+        <div class="contenedor-principal">
+            
+            <div class="columna-izquierda">
+                
+                <div class="tarjeta-seccion">
+                    <h2>🏢 Casa Matriz</h2>
+                    <div class="contenedor-edificios">
+                        
+                        <fieldset>
+                            <legend>🏢 Edificio 1</legend>
+
+                            <details class="piso">
+                                <summary>🚪 Planta Baja</summary>
+                                
+                                <details class="departamento">
+                                    <summary>🛎️ Recepción <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Recepción"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>📞 Producción ATC <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Producción ATC"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>💰 Cobranzas ATC <span class="cantidad-pcs">(0 PC)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Cobranzas ATC"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>📉 Tesorería Egresos <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Tesorería Egresos"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>💼 Gerencia <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Gerencia"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>📈 Tesorería Ingresos <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Tesorería Ingresos"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>⚖️ Asesoría Legal <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Asesoría Legal"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>👥 Recursos Humanos <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Recursos Humanos"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>🛠️ TI <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="TI"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>🛡️ PLD <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="PLD"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>🏥 Siniestros Vida <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Siniestros Vida"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>🔍 Auditoría Interna <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Auditoría Interna"></ul>
+                                </details>
+                            </details>
+
+                            <details class="piso">
+                                <summary>🔼 1° Piso</summary>
+                                
+                                <details class="departamento">
+                                    <summary>💼 Comercial <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Comercial"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>💰 Cobranzas <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Cobranzas"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>📊 Finanzas <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Finanzas"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>🧮 Contabilidad <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Contabilidad"></ul>
+                                </details>
+                            </details>
+
+                            <details class="piso">
+                                <summary>🔼 2° Piso</summary>
+                                
+                                <details class="departamento">
+                                    <summary>🏭 Producción <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Producción"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>📝 Emisión <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Emisión"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>🏦 Producción Banca <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Producción Banca"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>⛓️ Caución <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Caución"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>🤝 Reaseguro <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Reaseguro"></ul>
+                                </details>
+                            </details>
+
+                        </fieldset> 
+                        
+                        <fieldset>
+                            <legend>🏢 Edificio 2</legend>
+
+                            <details class="piso">
+                                <summary>🚪 Planta Baja</summary>
+                                
+                                <details class="departamento">
+                                    <summary>🚗 Siniestros ATC <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Siniestros ATC"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>🔍 Siniestro Seguimiento <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Siniestro Seguimiento"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>🏦 Data Center <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Data Center"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>📦 Logística <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Logística"></ul>
+                                </details>
+                            </details>
+
+                            <details class="piso">
+                                <summary>🔼 1° Piso</summary>
+                               
+                               <details class="departamento">
+                                    <summary>🎧 Call Center <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Call Center"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>🏢 Agentes <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Agentes"></ul>
+                                </details>
+
+                                <details class="departamento">
+                                    <summary>🏦 Siniestro Banca <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                    <ul class="lista-pcs" data-tipo="PC" data-depto="Siniestro Banca"></ul>
+                                </details>
+                            </details>
+                        </fieldset> 
+                    </div> 
+                </div> 
+
+                <div class="tarjeta-seccion" style="margin-top: 20px;">
+                    <h2>🏪 Sucursales</h2>
+                    <div class="contenedor-sucursales">
+                        
+                        <fieldset>
+                            <legend>📍 Agencias </legend>
+                            <details class="departamento">
+                                <summary>🏬 Sucursal Caaguazú <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                <ul class="lista-pcs" data-tipo="PC" data-depto="Caaguazú"></ul>
+                            </details>
+                            <details class="departamento">
+                                <summary>🏬 Sucursal Ciudad del Este <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                <ul class="lista-pcs" data-tipo="PC" data-depto="Ciudad del Este"></ul>
+                            </details>
+                            <details class="departamento">
+                                <summary>🏬 Sucursal CDE CAC <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                <ul class="lista-pcs" data-tipo="PC" data-depto="CDE CAC"></ul>
+                            </details>
+                            <details class="departamento">
+                                <summary>🏬 Sucursal Concepción <span class="cantidad-pcs">(0 PC)</span></summary>
+                                <ul class="lista-pcs" data-tipo="PC" data-depto="Concepción"></ul>
+                            </details>
+                            <details class="departamento">
+                                <summary>🏬 Sucursal Encarnación <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                <ul class="lista-pcs" data-tipo="PC" data-depto="Encarnación"></ul>
+                            </details>
+                            <details class="departamento">
+                                <summary>🏬 Sucursal Villarrica <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                <ul class="lista-pcs" data-tipo="PC" data-depto="Villarrica"></ul>
+                            </details>
+                            <details class="departamento">
+                                <summary>🏬 Sucursal Hernandarias <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                <ul class="lista-pcs" data-tipo="PC" data-depto="Hernandarias"></ul>
+                            </details>
+                            <details class="departamento">
+                                <summary>🏬 Sucursal Luque <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                <ul class="lista-pcs" data-tipo="PC" data-depto="Luque"></ul>
+                            </details>
+                            <details class="departamento">
+                                <summary>🏬 Sucursal Mariano Roque Alonso <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                <ul class="lista-pcs" data-tipo="PC" data-depto="Mariano Roque Alonso"></ul>
+                            </details>
+                            <details class="departamento">
+                                <summary>🏬 Sucursal San Juan Nepomuceno <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                <ul class="lista-pcs" data-tipo="PC" data-depto="San Juan Nepomuceno"></ul>
+                            </details>
+                            <details class="departamento">
+                                <summary>🏬 Sucursal San Lorenzo <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                <ul class="lista-pcs" data-tipo="PC" data-depto="San Lorenzo"></ul>
+                            </details>
+                            <details class="departamento">
+                                <summary>🏬 Sucursal Santa Rita <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                <ul class="lista-pcs" data-tipo="PC" data-depto="Santa Rita"></ul>
+                            </details>
+                            <details class="departamento">
+                                <summary>🏬 Sucursal Yguazú <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                <ul class="lista-pcs" data-tipo="PC" data-depto="Yguazú"></ul>
+                            </details>
+                            <details class="departamento">
+                                <summary>🏬 Sucursal Plaza de la Democracia <span class="cantidad-pcs">(0 PCs)</span></summary>
+                                <ul class="lista-pcs" data-tipo="PC" data-depto="Plaza de la Democracia"></ul>
+                            </details>
+                        </fieldset>
+
+                    </div>
+                </div> 
+            </div> 
+
+            <div class="columna-centro">
+                <div class="tarjeta-seccion">
+                    <h2>🖨️ IMPRESORAS</h2>
+                    <div class="contenedor-impresoras">
+                        
+                        <fieldset>
+                            <legend>🏢 CASA MATRIZ</legend>
+                            <details class="departamento"> 
+                                <summary>🖨️ LISTADO DE IMPRESORAS <span class="cantidad-pcs">(0 EQUIPOS)</span></summary>
+                                <ul class="lista-pcs" data-tipo="Impresora" data-edificio="Casa Matriz"></ul>
+                            </details>
+                        </fieldset>
+
+                        <fieldset style="margin-top: 15px;">
+                            <legend>🏪 SUCURSALES</legend>
+                            <details class="departamento"> 
+                                <summary>🖨️ LISTADO DE IMPRESORAS <span class="cantidad-pcs">(0 EQUIPOS)</span></summary>
+                                <ul class="lista-pcs" data-tipo="Impresora" data-edificio="Sucursales"></ul>
+                            </details>
+                        </fieldset>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="columna-derecha">
+                <div class="cuadro-resumen">
+                    <h3>📊 Resumen de Red</h3>
+                    
+                    <div class="bloque-metrica">
+                        <h4>🏢 Casa Matriz</h4>
+                        <div class="dato">🔹 Total PCs: <span id="total-pcs" class="numero">0</span></div>
+                        <div class="dato">🟢 Conectadas: <span id="pcs-conectadas" class="numero-verde">0</span></div>
+                        <div class="dato">🔴 Desconectadas: <span id="pcs-desconectadas" class="numero-rojo">0</span></div>
+                    </div>
+                    
+                    <hr class="separador-metrica">
+
+                    <div class="bloque-metrica">
+                        <h4>🏪 Sucursales</h4>
+                        <div class="dato">🔹 Total PCs: <span id="total-sucursales" class="numero">0</span></div>
+                        <div class="dato">🟢 Conectadas: <span id="sucursales-conectadas" class="numero-verde">0</span></div>
+                        <div class="dato">🔴 Desconectadas: <span id="sucursales-desconectadas" class="numero-rojo">0</span></div>
+                    </div>
+
+                    <hr class="separador-metrica global">
+
+                    <div class="bloque-metrica global">
+                        <h4>🌍 Total Global</h4>
+                        <div class="dato">🔹 Total General: <span id="total-global" class="numero">0</span></div>
+                        <div class="dato">🟢 Total Conectadas: <span id="global-conectadas" class="numero-verde">0</span></div>
+                        <div class="dato">🔴 Total Desconectadas: <span id="global-desconectadas" class="numero-rojo">0</span></div>
+                    </div>
+
+                </div>
+            </div> 
+        </div> 
+    </div>
+
+    <script>
+        
+        // 1. FUNCIÓN DEL BUSCADOR 
+
+        function filtrarPCs(esRefrescoAutomatizado = false) {
+            let textoBusqueda = document.getElementById('input-busqueda').value.toLowerCase();
+            let listaPCs = document.querySelectorAll('.lista-pcs li');
+            let todasLasGavetas = document.querySelectorAll('details.departamento, details.piso');
+
+            if (textoBusqueda === "") {
+                listaPCs.forEach(pc => { pc.style.display = "flex"; });
+                if (!esRefrescoAutomatizado) {
+                    todasLasGavetas.forEach(gaveta => { gaveta.open = false; });
+                }
+            } else {
+                listaPCs.forEach(pc => {
+                    let textoPC = pc.textContent.toLowerCase();
+                    if (textoPC.includes(textoBusqueda)) {
+                        pc.style.display = "flex";
+                        let depto = pc.closest('details.departamento');
+                        let piso = pc.closest('details.piso');
+                        if (depto) depto.open = true;
+                        if (piso) piso.open = true;
+                    } else {
+                        pc.style.display = "none";
+                    }
+                });
+            }
+        }
+
+
+        // 2. CONSULTA DINÁMICA DE BASE DE DATOS (JSON)
+        function actualizarEstadoRed() {
+            fetch('datos_red.json', { cache: "no-store" }) 
+                .then(respuesta => respuesta.json())
+                .then(datos => {
+                    document.querySelectorAll('.lista-pcs').forEach(ul => ul.innerHTML = '');
+                    let matrizConectadas = 0;
+                    let matrizDesconectadas = 0;
+                    let sucursalesConectadas = 0;
+                    let sucursalesDesconectadas = 0;
+                    datos.forEach(equipo => {
+                        let targetUl = null;
+                        if (equipo.tipo === 'Impresora') {
+                            targetUl = document.querySelector(`ul[data-tipo="Impresora"][data-edificio="${equipo.edificio}"]`);
+                        } else {
+                            targetUl = document.querySelector(`ul[data-tipo="PC"][data-depto="${equipo.departamento}"]`);
+                        }
+                        if (targetUl) {
+                            let li = document.createElement('li');
+                            li.className = 'pc-item';
+
+                            if (equipo.tipo === 'PC') {
+                                li.innerHTML = `
+                                    <span class="indicador ${equipo.estado}" id="status-${equipo.id}"></span>
+                                    <span class="pc-nombre">🖥️ ${equipo.id}</span>
+                                    <span class="pc-ip">(${equipo.ip})</span>
+                                    <span class="pc-usuario">👤 ${equipo.usuario}</span>
+                                `;
+
+                                if (equipo.edificio === 'Sucursales') {
+                                    if (equipo.estado === 'verde') sucursalesConectadas++;
+                                    else sucursalesDesconectadas++;
+                                } else {
+                                    if (equipo.estado === 'verde') matrizConectadas++;
+                                    else matrizDesconectadas++;
+                                }
+                            } else {
+                                let mostrarNombre = equipo.nombre_impresora;
+                                if (equipo.ip_fija) {
+                                    mostrarNombre += ` <span class="ip-impresora">(${equipo.ip_fija})</span>`;
+                                }
+                                li.innerHTML = `
+                                    <span class="indicador ${equipo.estado}" id="status-${equipo.id}"></span>
+                                    <span class="pc-nombre">${mostrarNombre}</span>
+                                    <span class="pc-usuario">${equipo.usuario}</span>
+                                `;
+                            }
+                            targetUl.appendChild(li);
+                        }
+                    });
+
+                    filtrarPCs(true);
+
+                    // Actualización dinámica de etiquetas de cantidad en los menús desplegables
+                    document.querySelectorAll('.lista-pcs').forEach(ul => {
+                        let summary = ul.parentElement.querySelector('summary');
+                        if (summary) {
+                            let badge = summary.querySelector('.cantidad-pcs');
+                            if (badge) {
+                                let totalElementos = ul.children.length;
+                                let tipoLabel = ul.getAttribute('data-tipo') === 'Impresora' ? 'EQUIPOS' : (totalElementos === 1 ? 'PC' : 'PCs');
+                                badge.innerText = `(${totalElementos} ${tipoLabel})`;
+                            }
+                        }
+                    });
+
+                    // Renderizar contadores globales en el cuadro de resumen lateral
+                    document.getElementById('pcs-conectadas').innerText = matrizConectadas;
+                    document.getElementById('pcs-desconectadas').innerText = matrizDesconectadas;
+                    document.getElementById('total-pcs').innerText = matrizConectadas + matrizDesconectadas;
+
+                    document.getElementById('sucursales-conectadas').innerText = sucursalesConectadas;
+                    document.getElementById('sucursales-desconectadas').innerText = sucursalesDesconectadas;
+                    document.getElementById('total-sucursales').innerText = sucursalesConectadas + sucursalesDesconectadas;
+
+                    document.getElementById('global-conectadas').innerText = matrizConectadas + sucursalesConectadas;
+                    document.getElementById('global-desconectadas').innerText = matrizDesconectadas + sucursalesDesconectadas;
+                    document.getElementById('total-global').innerText = (matrizConectadas + matrizDesconectadas) + (sucursalesConectadas + sucursalesDesconectadas);
+                })
+                .catch(error => console.log("Esperando actualización de red..."));
+        }
+
+        actualizarEstadoRed();
+        setInterval(actualizarEstadoRed, 3000);
+    </script>
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => { console.log('PWA Service Worker registrado:', registration.scope); })
+                    .catch(error => { console.log('Error al registrar Service Worker:', error); });
+            });
+        }
+    </script>
+</body>
+</html>
