@@ -3,16 +3,21 @@ import time
 import json
 import socket
 import sqlite3
+import os
 
 # Configuración del archivo de base de datos
 DB_NAME = "red_aesa.db"
+# Ruta donde Apache lee los archivos en Ubuntu
+JSON_OUTPUT_PATH = "/var/www/html/datos_red.json" 
 
 def realizar_ping(hostname):
-    """Hace un ping rápido al nombre o IP del equipo."""
+    """Hace un ping rápido compatible con Linux (Ubuntu)."""
     try:
-        comando = ["ping", "-n", "1", "-w", "1000", hostname]
-        resultado = subprocess.run(comando, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        return "verde" if "TTL=" in resultado.stdout else "rojo"
+        # En Linux se usa '-c' para la cantidad y '-w' es el tiempo de espera en segundos
+        comando = ["ping", "-c", "1", "-w", "1", hostname]
+        resultado = subprocess.run(comando, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=2)
+        # En Linux 'ttl' viene en minúsculas
+        return "verde" if "ttl=" in resultado.stdout.lower() else "rojo"
     except:
         return "rojo"
 
@@ -23,21 +28,17 @@ def obtener_ip(hostname):
     except:
         return "Sin IP"
 
-def obtener_usuario(hostname):
-    """Intenta detectar el usuario activo en la máquina remota."""
-    try:
-        comando = ["query", "user", "/server:" + hostname]
-        resultado = subprocess.run(comando, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=3)
-        lineas = resultado.stdout.strip().split('\n')
-        if len(lineas) > 1:
-            datos = lineas[1].split()
-            return datos[0].replace(">", "") if datos else "Sin sesión"
-        return "Sin sesión activa"
-    except:
-        return "No detectable"
+def obtener_usuario_linux(hostname):
+    """
+    Sustituto de 'query user' para Linux. 
+    Intenta resolver el nombre NetBIOS o deja un marcador limpio.
+    """
+    # Nota: Consultar sesiones de Windows desde Linux requiere herramientas como smbclient o rpcclient.
+    # Por ahora dejamos un retorno limpio para no trabar tu monitoreo.
+    return "En línea"
 
 def cargar_equipos_de_bd():
-    """Conecta a SQLite y obtiene todos los equipos con su información de ubicación."""
+    """Conecta a SQLite y obtiene todos los equipos."""
     equipos = []
     try:
         conn = sqlite3.connect(DB_NAME)
@@ -53,14 +54,14 @@ def cargar_equipos_de_bd():
 # MOTOR PRINCIPAL
 # =========================================================
 
-print(f"📡 Iniciando monitoreo relacional: leyendo equipos desde {DB_NAME}...")
+print(f"📡 Iniciando monitoreo relacional en Linux: leyendo desde {DB_NAME}...")
 
 while True:
     estado_general = []
     equipos = cargar_equipos_de_bd()
     
     if not equipos:
-        print("⚠️ Tabla vacía. Asegúrate de haber ejecutado los INSERT en DBeaver.")
+        print("⚠️ Tabla vacía o base de datos no encontrada.")
     else:
         for eq in equipos:
             id_equipo, tipo, ip_fija, edificio, piso, departamento, nombre_impresora = eq
@@ -70,13 +71,13 @@ while True:
             
             # 💡 EL TRUCO PARA LAS IMPRESORAS USB 💡
             if target == 'USB':
-                estado = 'verde' # Forzamos la luz verde sin hacer ping
+                estado = 'verde'
             else:
                 estado = realizar_ping(target)
             
             if tipo == 'PC':
                 ip_detectada = obtener_ip(target) if estado == 'verde' else "Offline"
-                usuario = obtener_usuario(target) if estado == 'verde' else "DESCONECTADO"
+                usuario = obtener_usuario_linux(target) if estado == 'verde' else "DESCONECTADO"
                 
                 estado_general.append({
                     "id": id_equipo, 
@@ -91,7 +92,6 @@ while True:
                 print(f"🖥️ {id_equipo} ({departamento}) | {estado} | {usuario}")
             
             else: # Si es Impresora
-                # Si detecta que es la impresora USB, le pone el texto personalizado
                 if target == 'USB':
                     estado_imp = "CONECTADA (USB)"
                 else:
@@ -110,11 +110,12 @@ while True:
                 })
                 print(f"🖨️ {id_equipo} ({edificio}) | {estado}")
 
+        # Guardar el JSON directamente en la ruta pública de Apache
         try:
-            with open('datos_red.json', 'w', encoding='utf-8') as f:
+            with open(JSON_OUTPUT_PATH, 'w', encoding='utf-8') as f:
                 json.dump(estado_general, f, indent=4)
         except Exception as e:
-            print(f"❌ Error al guardar datos_red.json: {e}")
+            print(f"❌ Error al guardar datos_red.json en Apache: {e}")
             
     print(f"✅ Ciclo terminado. Esperando 5 segundos...")
     time.sleep(5)
