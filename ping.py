@@ -30,8 +30,8 @@ def obtener_ip(hostname):
 
 def obtener_usuario_linux(hostname):
     """
-    Consulta de forma remota el nombre del usuario activo en una máquina Windows 
-    desde Linux utilizando rpcclient (Samba).
+    Consulta de forma remota el nombre del usuario activo y dumpea la respuesta 
+    en el log para analizar su formato real.
     """
     try:
         # LECTURA SEGURA DESDE VARIABLES DE ENTORNO
@@ -39,30 +39,29 @@ def obtener_usuario_linux(hostname):
         PASSWORD_RED = os.getenv("AESA_NET_PASS", "clave_defecto")
         DOMINIO = "aesa" 
 
-        # Comando RPC nativo compatible con todas las versiones de Samba
         comando = [
             "rpcclient", 
             "-U", f"{DOMINIO}\\{USUARIO_RED}%{PASSWORD_RED}", 
-            "-c", "netwkstauserenum", # Enumera los usuarios logueados en la estación
+            "-c", "netwkstauserenum", 
             hostname
         ]
         
-        # Ejecutamos con tiempo límite de 3 segundos
         resultado = subprocess.run(comando, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=3)
         
         if resultado.returncode == 0 and resultado.stdout:
+            # 🔍 IMPRIMIMOS LA RESPUESTA REAL EN EL LOG PARA VER QUÉ DICE
+            print(f"--- RESPUESTA DE {hostname} ---\n{resultado.stdout.strip()}\n-----------------------------")
+            
             lineas = resultado.stdout.strip().split('\n')
             for linea in lineas:
-                # El output típico es: "User name: miguel.sosa" o similar
-                if "user name:" in linea.lower() or "user:" in linea.lower():
+                # Intentamos capturar variantes comunes
+                if "user" in linea.lower() or "name" in linea.lower():
                     partes = linea.split(":")
                     if len(partes) > 1:
                         usuario_real = partes[1].strip()
-                        # Evitamos nombres genéricos del sistema o strings vacíos
                         if usuario_real and not usuario_real.endswith("$") and "none" not in usuario_real.lower():
                             return usuario_real
             
-            # Si el canal conectó pero no extrajo un string limpio en el bucle
             return "Sesión Activa"
         
         return "Sin sesión activa"
