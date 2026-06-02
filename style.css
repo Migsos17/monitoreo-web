@@ -9,6 +9,9 @@ body {
     
     /* Fondo azul claro / celeste corporativo */
     background-color: #1a3a6a; 
+    /* LA MAGIA DEL TAMAÑO AL 90% */
+    zoom: 90%;
+    
 }
 
 /* ==========================================================================
