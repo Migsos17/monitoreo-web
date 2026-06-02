@@ -31,37 +31,38 @@ def obtener_ip(hostname):
 def obtener_usuario_linux(hostname):
     """
     Consulta de forma remota el nombre del usuario activo en una máquina Windows 
-    desde Linux utilizando comandos Net RPC de Samba.
+    desde Linux utilizando rpcclient (Samba).
     """
     try:
-        # 🔐 LECTURA SEGURA DESDE VARIABLES DE ENTORNO
+        # LECTURA SEGURA DESDE VARIABLES DE ENTORNO
         USUARIO_RED = os.getenv("AESA_NET_USER", "usuario_defecto")
         PASSWORD_RED = os.getenv("AESA_NET_PASS", "clave_defecto")
         DOMINIO = "aesa" 
 
-        # Comando Net RPC específico para extraer la sesión interactiva real
+        # Comando RPC nativo compatible con todas las versiones de Samba
         comando = [
-            "net", "rpc", "workstation", "user", "query",
-            "-S", hostname,
-            "-U", f"{DOMINIO}\\{USUARIO_RED}%{PASSWORD_RED}"
+            "rpcclient", 
+            "-U", f"{DOMINIO}\\{USUARIO_RED}%{PASSWORD_RED}", 
+            "-c", "netwkstauserenum", # Enumera los usuarios logueados en la estación
+            hostname
         ]
         
-        # Ejecutamos con un tiempo límite de 3 segundos por equipo
+        # Ejecutamos con tiempo límite de 3 segundos
         resultado = subprocess.run(comando, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=3)
         
         if resultado.returncode == 0 and resultado.stdout:
             lineas = resultado.stdout.strip().split('\n')
             for linea in lineas:
-                # El output estándar de Windows reporta: "User logged in: NOMBRE"
-                if "logged in:" in linea.lower():
+                # El output típico es: "User name: miguel.sosa" o similar
+                if "user name:" in linea.lower() or "user:" in linea.lower():
                     partes = linea.split(":")
                     if len(partes) > 1:
                         usuario_real = partes[1].strip()
-                        # Si devolvió un string válido y no está vacío o marcado como 'none'
-                        if usuario_real and "none" not in usuario_real.lower():
+                        # Evitamos nombres genéricos del sistema o strings vacíos
+                        if usuario_real and not usuario_real.endswith("$") and "none" not in usuario_real.lower():
                             return usuario_real
             
-            # Respaldo si el puerto respondió pero la sesión interactiva está en transición
+            # Si el canal conectó pero no extrajo un string limpio en el bucle
             return "Sesión Activa"
         
         return "Sin sesión activa"
