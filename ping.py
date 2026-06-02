@@ -5,19 +5,26 @@ import socket
 import sqlite3
 import os
 
-# Configuración del archivo de base de datos
+# =========================================================
+# CONFIGURACIÓN
+# =========================================================
 DB_NAME = "red_aesa.db"
-# Ruta donde Apache lee los archivos en Ubuntu
-JSON_OUTPUT_PATH = "/var/www/html/datos_red.json" 
+
+# 🚀 LA NUEVA LÍNEA: Guarda el JSON directo en el servidor Ubuntu por la red
+JSON_OUTPUT_PATH = r"\\192.168.0.194\PanelWeb\datos_red.json" 
+
+# =========================================================
+# FUNCIONES
+# =========================================================
 
 def realizar_ping(hostname):
-    """Hace un ping rápido compatible con Linux (Ubuntu)."""
+    """Hace un ping rápido usando la consola nativa de Windows."""
     try:
-        # En Linux se usa '-c' para la cantidad y '-w' es el tiempo de espera en segundos
-        comando = ["ping", "-c", "1", "-w", "1", hostname]
+        # En Windows se usa '-n' para la cantidad y '-w' para los milisegundos
+        comando = ["ping", "-n", "1", "-w", "1000", hostname]
         resultado = subprocess.run(comando, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=2)
-        # En Linux 'ttl' viene en minúsculas
-        return "verde" if "ttl=" in resultado.stdout.lower() else "rojo"
+        # Si responde, el texto incluye "TTL="
+        return "verde" if "TTL=" in resultado.stdout.upper() else "rojo"
     except:
         return "rojo"
 
@@ -28,50 +35,37 @@ def obtener_ip(hostname):
     except:
         return "Sin IP"
 
-def obtener_usuario_linux(hostname):
+def obtener_usuario_windows(hostname):
     """
-    Consulta de forma remota el nombre del usuario activo y dumpea la respuesta 
-    en el log para analizar su formato real.
+    Usa el comando nativo de Windows 'query user' para consultar la PC remota.
+    Como se ejecuta desde otra PC con Windows de la misma red, no lo bloquean.
     """
     try:
-        # LECTURA SEGURA DESDE VARIABLES DE ENTORNO
-        USUARIO_RED = os.getenv("AESA_NET_USER", "usuario_defecto")
-        PASSWORD_RED = os.getenv("AESA_NET_PASS", "clave_defecto")
-        DOMINIO = "aesa" 
-
-        comando = [
-            "rpcclient", 
-            "-U", f"{DOMINIO}\\{USUARIO_RED}%{PASSWORD_RED}", 
-            "-c", "netwkstauserenum", 
-            hostname
-        ]
-        
+        comando = ["query", "user", f"/server:{hostname}"]
         resultado = subprocess.run(comando, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=3)
         
-        if resultado.returncode == 0 and resultado.stdout:
-            # 🔍 IMPRIMIMOS LA RESPUESTA REAL EN EL LOG PARA VER QUÉ DICE
-            print(f"--- RESPUESTA DE {hostname} ---\n{resultado.stdout.strip()}\n-----------------------------")
-            
+        if resultado.returncode == 0:
             lineas = resultado.stdout.strip().split('\n')
-            for linea in lineas:
-                # Intentamos capturar variantes comunes
-                if "user" in linea.lower() or "name" in linea.lower():
-                    partes = linea.split(":")
-                    if len(partes) > 1:
-                        usuario_real = partes[1].strip()
-                        if usuario_real and not usuario_real.endswith("$") and "none" not in usuario_real.lower():
-                            return usuario_real
-            
+            if len(lineas) > 1:
+                linea_datos = lineas[1].strip()
+                # Limpiamos el '>' que Windows le pone al usuario activo
+                if linea_datos.startswith('>'):
+                    linea_datos = linea_datos[1:]
+                
+                # Agarramos la primera palabra (el nombre de usuario)
+                usuario_real = linea_datos.split()[0]
+                return usuario_real
+                
             return "Sesión Activa"
-        
         return "Sin sesión activa"
-    except Exception as e:
+    except Exception:
         return "No detectable"
 
 def cargar_equipos_de_bd():
     """Conecta a SQLite y obtiene todos los equipos."""
     equipos = []
     try:
+        # Asegurate de que red_aesa.db esté en la misma carpeta que este script
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
         cursor.execute("SELECT id_equipo, tipo, ip_fija, edificio, piso, departamento, nombre_impresora FROM equipos")
@@ -85,7 +79,7 @@ def cargar_equipos_de_bd():
 # MOTOR PRINCIPAL
 # =========================================================
 
-print(f"📡 Iniciando monitoreo relacional en Linux: leyendo desde {DB_NAME}...")
+print(f"📡 Iniciando motor híbrido en Windows... Enviando datos a {JSON_OUTPUT_PATH}")
 
 while True:
     estado_general = []
@@ -97,7 +91,6 @@ while True:
         for eq in equipos:
             id_equipo, tipo, ip_fija, edificio, piso, departamento, nombre_impresora = eq
             
-            # Las impresoras usan su IP fija como objetivo, las PCs usan su hostname
             target = ip_fija if ip_fija else id_equipo
             
             # 💡 EL TRUCO PARA LAS IMPRESORAS USB 💡
@@ -108,7 +101,7 @@ while True:
             
             if tipo == 'PC':
                 ip_detectada = obtener_ip(target) if estado == 'verde' else "Offline"
-                usuario = obtener_usuario_linux(target) if estado == 'verde' else "DESCONECTADO"
+                usuario = obtener_usuario_windows(target) if estado == 'verde' else "DESCONECTADO"
                 
                 estado_general.append({
                     "id": id_equipo, 
@@ -141,12 +134,12 @@ while True:
                 })
                 print(f"🖨️ {id_equipo} ({edificio}) | {estado}")
 
-        # Guardar el JSON directamente en la ruta pública de Apache
+        # Guardar el JSON directamente en el servidor Ubuntu por red
         try:
             with open(JSON_OUTPUT_PATH, 'w', encoding='utf-8') as f:
                 json.dump(estado_general, f, indent=4)
         except Exception as e:
-            print(f"❌ Error al guardar datos_red.json en Apache: {e}")
+            print(f"❌ Error de red al guardar en Ubuntu: {e}\n(Verificá que la IP sea correcta y la carpeta esté compartida)")
             
     print(f"✅ Ciclo terminado. Esperando 5 segundos...")
     time.sleep(5)
