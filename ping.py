@@ -30,8 +30,8 @@ def obtener_ip(hostname):
 
 def obtener_usuario_linux(hostname):
     """
-    Consulta de forma remota el usuario activo en una máquina Windows desde Linux
-    utilizando RPC (Samba client).
+    Consulta de forma remota el nombre del usuario activo en una máquina Windows 
+    desde Linux utilizando comandos Net RPC de Samba.
     """
     try:
         # 🔐 LECTURA SEGURA DESDE VARIABLES DE ENTORNO
@@ -39,20 +39,29 @@ def obtener_usuario_linux(hostname):
         PASSWORD_RED = os.getenv("AESA_NET_PASS", "clave_defecto")
         DOMINIO = "aesa" 
 
-        # Comando RPC para listar las sesiones activas
+        # Comando Net RPC específico para extraer la sesión interactiva real
         comando = [
-            "rpcclient", 
-            "-U", f"{DOMINIO}\\{USUARIO_RED}%{PASSWORD_RED}", 
-            "-c", "querysrvinfo", 
-            hostname
+            "net", "rpc", "workstation", "user", "query",
+            "-S", hostname,
+            "-U", f"{DOMINIO}\\{USUARIO_RED}%{PASSWORD_RED}"
         ]
         
-        # Limitamos el tiempo a 3 segundos para que una máquina colgada no pare el bucle
+        # Ejecutamos con un tiempo límite de 3 segundos por equipo
         resultado = subprocess.run(comando, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=3)
         
-        if resultado.returncode == 0:
-            # Si el canal conecta de forma exitosa, devolvemos un estado positivo
-            # En infraestructuras con permisos estrictos, esto asegura que el equipo responde
+        if resultado.returncode == 0 and resultado.stdout:
+            lineas = resultado.stdout.strip().split('\n')
+            for linea in lineas:
+                # El output estándar de Windows reporta: "User logged in: NOMBRE"
+                if "logged in:" in linea.lower():
+                    partes = linea.split(":")
+                    if len(partes) > 1:
+                        usuario_real = partes[1].strip()
+                        # Si devolvió un string válido y no está vacío o marcado como 'none'
+                        if usuario_real and "none" not in usuario_real.lower():
+                            return usuario_real
+            
+            # Respaldo si el puerto respondió pero la sesión interactiva está en transición
             return "Sesión Activa"
         
         return "Sin sesión activa"
