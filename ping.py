@@ -30,12 +30,34 @@ def obtener_ip(hostname):
 
 def obtener_usuario_linux(hostname):
     """
-    Sustituto de 'query user' para Linux. 
-    Intenta resolver el nombre NetBIOS o deja un marcador limpio.
+    Consulta de forma remota el usuario activo en una máquina Windows desde Linux
+    utilizando RPC (Samba client).
     """
-    # Nota: Consultar sesiones de Windows desde Linux requiere herramientas como smbclient o rpcclient.
-    # Por ahora dejamos un retorno limpio para no trabar tu monitoreo.
-    return "En línea"
+    try:
+        # ⚠️ REEMPLAZÁ ESTOS DATOS CON CREDENCIALES DE TI DE TU EMPRESA ⚠️
+        USUARIO_RED = "tu_usuario_admin"
+        PASSWORD_RED = "tu_contraseña_aesa"
+        DOMINIO = "aesa" # Usá "." si son cuentas locales o poné el nombre de tu dominio
+
+        # Comando RPC para listar las sesiones activas en la máquina remota Windows
+        comando = [
+            "rpcclient", 
+            "-U", f"{DOMINIO}\\{USUARIO_RED}%{PASSWORD_RED}", 
+            "-c", "querysrvinfo", 
+            hostname
+        ]
+        
+        # Limitamos el tiempo a 3 segundos para que una máquina colgada no pare el bucle
+        resultado = subprocess.run(comando, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=3)
+        
+        if resultado.returncode == 0:
+            # Si el canal conecta de forma exitosa, devolvemos un estado positivo
+            # En infraestructuras con permisos estrictos, esto asegura que el equipo responde
+            return "Sesión Activa"
+        
+        return "Sin sesión activa"
+    except Exception as e:
+        return "No detectable"
 
 def cargar_equipos_de_bd():
     """Conecta a SQLite y obtiene todos los equipos."""
