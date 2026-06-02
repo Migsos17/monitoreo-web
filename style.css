@@ -142,30 +142,33 @@ ul {
     margin: 8px 0 0 15px;
 }
 
-li {
+/* Usamos la clase pc-item que le pusiste en el JavaScript */
+.pc-item {
     display: flex;
     align-items: center;
     padding: 8px 0;
     font-size: 0.95rem;
     border-bottom: 1px dashed #f1f2f6;
+    gap: 8px; /* Da un espacio parejo entre la luz, la PC, la IP y el usuario */
+    overflow: hidden; /* Evita que cualquier texto rebelde se salga de la caja */
 }
 
-li:last-child {
+.pc-item:last-child {
     border-bottom: none;
 }
 
 .pc-nombre {
     font-weight: 600;
     color: #2c3e50;
-    margin-right: 8px; /* Deja un pequeño espacio antes de la IP */
+    flex-shrink: 0; /* Prohíbe que el nombre de la PC se deforme o achique */
 }
 
-/* NUEVA CLASE PARA LA IP DE LAS PCs EN GRIS */
 .pc-ip {
     color: #94a3b8;
     font-size: 0.85rem;
     font-family: Consolas, monospace; /* Letra tipo consola/código */
     margin-right: auto; /* ESTA ES LA MAGIA: Empuja al usuario hacia la derecha */
+    flex-shrink: 0; /* Prohíbe que la IP se rompa en dos renglones */
 }
 
 .pc-usuario {
@@ -173,6 +176,9 @@ li:last-child {
     text-align: right;
     color: #7f8c8d;
     font-size: 0.85rem;
+    overflow: hidden; /* Oculta lo que sobra del texto */
+    text-overflow: ellipsis; /* Agrega los 3 puntitos (...) si el nombre es larguísimo */
+    max-width: 130px; /* Límite máximo para el nombre de usuario */
 }
 
 /* CLASE PARA LA IP DE IMPRESORAS */
@@ -182,7 +188,6 @@ li:last-child {
     font-family: Consolas, monospace; 
     margin-left: 6px;
 }
-
 /* ==========================================================================
    7. INDICADORES DE ESTADO (LUCES VERDE / ROJO)
    ========================================================================== */
