@@ -34,12 +34,12 @@ def obtener_usuario_linux(hostname):
     utilizando RPC (Samba client).
     """
     try:
-        # ⚠️ REEMPLAZÁ ESTOS DATOS CON CREDENCIALES DE TI DE TU EMPRESA ⚠️
-        USUARIO_RED = "tu_usuario_admin"
-        PASSWORD_RED = "tu_contraseña_aesa"
-        DOMINIO = "aesa" # Usá "." si son cuentas locales o poné el nombre de tu dominio
+        # 🔐 LECTURA SEGURA DESDE VARIABLES DE ENTORNO
+        USUARIO_RED = os.getenv("AESA_NET_USER", "usuario_defecto")
+        PASSWORD_RED = os.getenv("AESA_NET_PASS", "clave_defecto")
+        DOMINIO = "aesa" 
 
-        # Comando RPC para listar las sesiones activas en la máquina remota Windows
+        # Comando RPC para listar las sesiones activas
         comando = [
             "rpcclient", 
             "-U", f"{DOMINIO}\\{USUARIO_RED}%{PASSWORD_RED}", 
