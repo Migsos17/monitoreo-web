@@ -27,7 +27,8 @@
             </div>
 
             <div class="buscador-container">
-                <input type="text" id="input-busqueda" placeholder="🔍 Buscar por PC, usuario o IP..." onkeyup="filtrarPCs(false)">
+                <input type="text" id="input-busqueda" placeholder="🔍 Buscar por PC, usuario o IP..." onkeyup="filtrarPCsLocal()">
+                <div id="resultados-busqueda" class="resultados-lista"></div>
             </div>
         </header>
 
@@ -339,38 +340,92 @@
 
     <script>
         
-        // 1. FUNCIÓN DEL BUSCADOR 
+        // 1. FUNCIÓN DEL BUSCADOR FLOTANTE
 
-        function filtrarPCs(esRefrescoAutomatizado = false) {
-            let textoBusqueda = document.getElementById('input-busqueda').value.toLowerCase();
-            let listaPCs = document.querySelectorAll('.lista-pcs li');
-            let todasLasGavetas = document.querySelectorAll('details.departamento, details.piso');
-
-            if (textoBusqueda === "") {
-                listaPCs.forEach(pc => { pc.style.display = "flex"; });
-                if (!esRefrescoAutomatizado) {
-                    todasLasGavetas.forEach(gaveta => { gaveta.open = false; });
-                }
-            } else {
-                listaPCs.forEach(pc => {
-                    let textoPC = pc.textContent.toLowerCase();
-                    if (textoPC.includes(textoBusqueda)) {
-                        pc.style.display = "flex";
-                        let depto = pc.closest('details.departamento');
-                        let piso = pc.closest('details.piso');
-                        if (depto) depto.open = true;
-                        if (piso) piso.open = true;
-                    } else {
-                        pc.style.display = "none";
-                    }
-                });
+        function filtrarPCsLocal() {
+            let input = document.getElementById('input-busqueda');
+            let texto = input.value.toLowerCase();
+            let contenedorResultados = document.getElementById('resultados-busqueda');
+            
+            contenedorResultados.innerHTML = ''; // Limpia resultados anteriores
+            
+            if (texto === '') {
+                contenedorResultados.style.display = 'none';
+                return;
             }
+            
+            let todasLasPCs = document.querySelectorAll('.pc-item');
+            let coincidencias = 0;
+            
+            todasLasPCs.forEach(pc => {
+                let nombre = pc.querySelector('.pc-nombre') ? pc.querySelector('.pc-nombre').textContent : '';
+                let ip = pc.querySelector('.pc-ip') ? pc.querySelector('.pc-ip').textContent : '';
+                let usuario = pc.querySelector('.pc-usuario') ? pc.querySelector('.pc-usuario').textContent : '';
+                
+                let textoCompleto = (nombre + ip + usuario).toLowerCase();
+                
+                if (textoCompleto.includes(texto)) {
+                    coincidencias++;
+                    
+                    let item = document.createElement('div');
+                    item.className = 'resultado-item';
+                    item.innerHTML = `
+                        <span>${nombre} ${ip}</span>
+                        <span style="color: #7f8c8d;">${usuario}</span>
+                    `;
+                    
+                    item.onclick = function() {
+                        input.value = nombre.replace('🖥️ ', '').trim();
+                        contenedorResultados.style.display = 'none';
+                        
+                        // EL TRUCO: Buscamos la PC "viva" en la pantalla en este exacto segundo
+                        let pcsVivas = document.querySelectorAll('.pc-item');
+                        let pcReal = Array.from(pcsVivas).find(p => p.querySelector('.pc-nombre').textContent === nombre);
+                        
+                        if (pcReal) {
+                            // 1. PRIMERO abrimos las carpetas (gavetas)
+                            let depto = pcReal.closest('details.departamento');
+                            let piso = pcReal.closest('details.piso');
+                            if (piso) piso.open = true;
+                            if (depto) depto.open = true;
+                            
+                            // 2. Le damos 100 milisegundos al navegador para abrir y hacemos el scroll
+                            setTimeout(() => {
+                                pcReal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                
+                                // 3. EFECTO FACHA: Resaltamos el fondo de la PC
+                                pcReal.style.transition = "background-color 0.3s";
+                                pcReal.style.backgroundColor = "#fffbcc"; // Amarillo suave
+                                
+                                // A los 2 segundos le sacamos el color
+                                setTimeout(() => {
+                                    pcReal.style.backgroundColor = "transparent";
+                                }, 2000);
+                                
+                            }, 100);
+                        }
+                    };
+                    
+                    contenedorResultados.appendChild(item);
+                }
+            });
+            
+            contenedorResultados.style.display = coincidencias > 0 ? 'block' : 'none';
         }
+
+        // Cierra la lista si hacés clic afuera
+        document.addEventListener('click', function(event) {
+            let buscador = document.getElementById('input-busqueda');
+            let contenedorResultados = document.getElementById('resultados-busqueda');
+            if (event.target !== buscador) {
+                contenedorResultados.style.display = 'none';
+            }
+        });
 
 
         // 2. CONSULTA DINÁMICA DE BASE DE DATOS (JSON)
         function actualizarEstadoRed() {
-            fetch('datos_red.json', { cache: "no-store" }) 
+            fetch(`datos_red.json?v=${new Date().getTime()}`, { cache: "no-store" }) 
                 .then(respuesta => respuesta.json())
                 .then(datos => {
                     document.querySelectorAll('.lista-pcs').forEach(ul => ul.innerHTML = '');
@@ -419,7 +474,7 @@
                         }
                     });
 
-                    filtrarPCs(true);
+                    
 
                     // Actualización dinámica de etiquetas de cantidad en los menús desplegables
                     document.querySelectorAll('.lista-pcs').forEach(ul => {
