@@ -370,7 +370,7 @@
 
         // 2. CONSULTA DINÁMICA DE BASE DE DATOS (JSON)
         function actualizarEstadoRed() {
-            fetch('datos_red.json', { cache: "no-store" }) 
+            fetch(`datos_red.json?v=${new Date().getTime()}`, { cache: "no-store" }) 
                 .then(respuesta => respuesta.json())
                 .then(datos => {
                     document.querySelectorAll('.lista-pcs').forEach(ul => ul.innerHTML = '');
