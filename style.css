@@ -254,13 +254,14 @@ ul {
 .numero-rojo { color: #e74c3c; font-weight: bold; }
 
 /* ==========================================================================
-   9. BARRA DE BÚSQUEDA 
+   9. BARRA DE BÚSQUEDA Y RESULTADOS FLOTANTES
    ========================================================================== */
 .buscador-container {
     margin-left: auto; 
     padding-right: 10px;
     display: flex;
     align-items: center;
+    position: relative; /* CLAVE: Para que la lista flote justo debajo de este contenedor */
 }
 
 #input-busqueda {
@@ -277,6 +278,44 @@ ul {
 #input-busqueda:focus {
     border-color: #1e3c72;
     box-shadow: 0 0 8px rgba(30, 60, 114, 0.15);
+}
+
+/* --- NUEVA LISTA FLOTANTE --- */
+.resultados-lista {
+    position: absolute;
+    top: 100%; /* Se pega justo abajo del input */
+    left: 0;
+    width: 100%; /* Mismo ancho que el buscador */
+    background-color: white;
+    border: 1px solid #bdc3c7;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    z-index: 1000; /* Lo pone por encima de los edificios */
+    max-height: 250px; /* Altura máxima antes de que aparezca la barra de scroll */
+    overflow-y: auto;
+    display: none; /* Oculto por defecto hasta que busques algo */
+    margin-top: 5px;
+    padding: 0;
+    list-style: none;
+}
+
+/* Cada opción de la lista */
+.resultado-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #f1f2f6;
+    color: #2c3e50;
+    display: flex;
+    justify-content: space-between;
+}
+
+.resultado-item:last-child {
+    border-bottom: none;
+}
+
+.resultado-item:hover {
+    background-color: #ebf3f9; /* Celentito al pasar el mouse */
 }
 
 /* ==========================================================================
